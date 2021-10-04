@@ -16,6 +16,8 @@ for index, row_data in data.iterrows():
             kaf = kaf.replace(i,"")
     kafa = kaf.replace(". ", "")
     kafa = kaf.replace(".", "")
+    if kafa[0] == " ":
+        kafa = kafa[1::]
     if not session.query(Kafedra).filter_by(name=kafa).first():
         kaf = Kafedra(name=kafa)
         session.add(kaf)

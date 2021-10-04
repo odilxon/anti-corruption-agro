@@ -43,6 +43,7 @@ class Session(Base):
     teacher = Column(String, ForeignKey("teacher.id"), nullable=True)
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
+    step = Column(String, nullable=True)
     username = Column(String, nullable=True)
 
 

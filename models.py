@@ -15,8 +15,8 @@ class Kafedra(Base):
     __tablename__ = 'kafedra'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    teacher = relationship("Teacher", back_populates="kafedra")
-    session = relationship("Session", back_populates="kafedra")
+    teachers = relationship("Teacher", backref="kafedra", lazy=True)
+    sessions = relationship("Session", backref="kafedra", lazy=True)
 
 
 class Teacher(Base):
@@ -24,8 +24,8 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     kafedra_id = Column(Integer, ForeignKey("kafedra.id"))
-    complain = relationship("Complain", back_populates="teacher")
-    session = relationship("Session", back_populates="teacher")
+    _complain = relationship("Complain", backref="teacher", lazy=True)
+    _session = relationship("Session", backref="teacher", lazy=True)
 
 
 class Complain(Base):
@@ -39,14 +39,16 @@ class Session(Base):
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=True)
-    kafedra = Column(String, ForeignKey("kafedra.id"), nullable=True)
-    teacher = Column(String, ForeignKey("teacher.id"), nullable=True)
+    kafedra_id = Column(Integer, ForeignKey("kafedra.id"), nullable=True)
+    teacher_id = Column(Integer, ForeignKey("teacher.id"), nullable=True)
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     step = Column(String, nullable=True)
     username = Column(String, nullable=True)
 
 
-# Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
-session.close()
+def Reset():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+Reset()

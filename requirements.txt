@@ -1,5 +1,6 @@
-pip-chill
-pytelegrambotapi
-SQLAlchemy
-pandas
 openpyxl
+pandas
+pip-chill
+psycopg2
+pytelegrambotapi
+sqlalchemy

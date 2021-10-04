@@ -1,4 +1,5 @@
 import telebot
+from models import *
 TOKEN = "1258084373:AAFnxvjZ67Gx4iMROrCtyk21h981G-4xJWE"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
@@ -12,4 +13,7 @@ def send_welcome(message):
     with open("horny.mp4", "rb") as f:
         bot.send_video(message.chat.id,f)
 
-bot.infinity_polling()
+
+if __name__ == "__main__":
+    bot.infinity_polling()
+    session.close()

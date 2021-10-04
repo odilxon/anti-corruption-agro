@@ -52,3 +52,8 @@ def Reset():
     Base.metadata.create_all(bind=engine)
 
 Reset()
+
+
+
+
+session.close()

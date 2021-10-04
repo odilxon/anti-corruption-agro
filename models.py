@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker, Session, subqueryload, joinedload, rela
 
 meta = MetaData()
 Base = declarative_base()
-engine = create_engine("sqlite:///corrupt.db")
+engine = create_engine("postgresql://antiagro:antiagro@192.168.43.12:5432/antiagro")
 
 Session = sessionmaker(bind=engine)
 session = Session()

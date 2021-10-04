@@ -24,8 +24,8 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     kafedra_id = Column(Integer, ForeignKey("kafedra.id"))
-    _complain = relationship("Complain", backref="teacher", lazy=True)
-    _session = relationship("Session", backref="teacher", lazy=True)
+    complain = relationship("Complain", backref="teacher", lazy=True)
+    session = relationship("Session", backref="teacher", lazy=True)
 
 
 class Complain(Base):
@@ -54,3 +54,7 @@ def Reset():
     Base.metadata.create_all(bind=engine)
 
 # Reset()
+
+
+session.close()
+

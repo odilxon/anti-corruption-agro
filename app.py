@@ -88,7 +88,10 @@ def get_msg(message):
         text = message.text
         co = Complain(
             message=text,
-            teacher_id=ss.teacher_id
+            teacher_id=ss.teacher_id,
+            first_name = ss.first_name,
+            username = ss.username,
+            chat_id = chat_id
         )
         session.add(co)
         session.commit()

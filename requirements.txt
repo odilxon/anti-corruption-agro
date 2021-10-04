@@ -1,2 +1,5 @@
 pip-chill
 pytelegrambotapi
+SQLAlchemy
+pandas
+openpyxl

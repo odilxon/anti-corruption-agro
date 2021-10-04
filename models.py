@@ -33,7 +33,9 @@ class Complain(Base):
     id = Column(Integer, primary_key=True)
     message = Column(String, nullable=False)
     teacher_id = Column(Integer, ForeignKey("teacher.id"))
-
+    first_name = Column(String, nullable=True)
+    username = Column(String, nullable=True)
+    chat_id = Column(Integer, nullable=True)
 
 class Session(Base):
     __tablename__ = 'session'
@@ -51,4 +53,4 @@ def Reset():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-Reset()
+# Reset()

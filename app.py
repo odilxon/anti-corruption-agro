@@ -18,7 +18,7 @@ def gen_kafedra_inline():
     f = []
     for kf in kfds:
         f.append(telebot.types.InlineKeyboardButton(kf.name, callback_data="k_" + str(kf.id)))
-
+    f.append(telebot.types.InlineKeyboardButton("❎ Ортга қайтиш", callback_data="k_0"))
     markup.add(*f)
     return markup
 
@@ -33,7 +33,7 @@ def gen_teacher_inline(k_id):
     ins = []
     for teach in teachers:
         ins.append(telebot.types.InlineKeyboardButton(teach.name, callback_data="t_" + str(teach.id)))
-    
+    ins.append(telebot.types.InlineKeyboardButton("❎ Ортга қайтиш", callback_data="t_0"))
     markup.add(*ins)
     return markup
 
@@ -59,31 +59,36 @@ def callback_query(call):
         if _type == "negative":
             bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
         else:
-            bot.send_message(call.message.chat.id, "Шикоят матнини киритинг")
+            bot.send_message(call.message.chat.id, "Таклиф матнини киритинг")
             ss.step = "text"
         session.commit()
         
     if "k_" in call.data:
         k_id = int(call.data.replace("k_", ""))
-        k = session.query(Kafedra).get(k_id).name
-        bot.edit_message_text("Кафедра: " + k, call.message.chat.id,call.message.id,reply_markup=None)
-        bot.send_message(call.message.chat.id, "Ўқитувчини танланг:", reply_markup=gen_teacher_inline(k_id))
-        ss.step = "teacher"
-        ss.kafedra_id = k_id
-        session.commit()
+        if k_id == 0:
+            bot.send_message(call.message.chat.id, "Ассалому алайкум. Таклиф ва шикоятларингизни аноним холда қолдиришингиз мумкин:", reply_markup=gen_type_complain())
+            bot.delete_message(call.message.chat.id,call.message.id)
+        else:
+            k = session.query(Kafedra).get(k_id).name
+            bot.edit_message_text("Кафедра: " + k, call.message.chat.id,call.message.id,reply_markup=None)
+            bot.send_message(call.message.chat.id, "Ўқитувчини танланг:", reply_markup=gen_teacher_inline(k_id))
+            ss.step = "teacher"
+            ss.kafedra_id = k_id
+            session.commit()
         
     if "t_" in call.data:
         t_id = int(call.data.replace("t_", ""))
-        t = session.query(Teacher).get(t_id).name
-        bot.edit_message_text("Ўқитувчи: " + t, call.message.chat.id,call.message.id,reply_markup=None)
-        if ss.type == "negative":
-            bot.send_message(call.message.chat.id, "Шикоят матнини киритинг")
+        if t_id == 0:
+            bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
+            bot.delete_message(call.message.chat.id,call.message.id)
         else:
-            bot.send_message(call.message.chat.id, "Таклиф матнини киритинг")
-        ss.step = "text"
-        ss.teacher_id = t_id
-        session.commit()
-        
+            t = session.query(Teacher).get(t_id).name
+            bot.edit_message_text("Ўқитувчи: " + t, call.message.chat.id,call.message.id,reply_markup=None)
+            bot.send_message(call.message.chat.id, "Шикоят матнини киритинг")
+            ss.step = "text"
+            ss.teacher_id = t_id
+            session.commit()
+            
     
     #bot.edit_message_reply_markup(call.message.chat.id, call.message.id, reply_markup=None)
 

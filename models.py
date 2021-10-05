@@ -32,6 +32,7 @@ class Complain(Base):
     __tablename__ = 'complain'
     id = Column(Integer, primary_key=True)
     message = Column(String, nullable=False)
+    type = Column(String, nullable=True)
     teacher_id = Column(Integer, ForeignKey("teacher.id"))
     first_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
@@ -46,6 +47,7 @@ class Session(Base):
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     step = Column(String, nullable=True)
+    type = Column(String, nullable=True)
     username = Column(String, nullable=True)
 
 

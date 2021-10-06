@@ -11,10 +11,7 @@ def gen_kafedra_inline():
     markup = telebot.types.InlineKeyboardMarkup()
     markup.row_width = 1
     kfds = session.query(Kafedra).all()
-    for i in range(len(kfds)):
-        for j in range(len(kfds)):
-            if kfds[i].name[0] < kfds[j].name[0]:
-                kfds[i], kfds[j] = kfds[j], kfds[i]
+    kfds = sorted(kfds, key=lambda kaf: kaf.name)
     f = []
     for kf in kfds:
         f.append(telebot.types.InlineKeyboardButton(kf.name, callback_data="k_" + str(kf.id)))
@@ -26,10 +23,7 @@ def gen_teacher_inline(k_id):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.row_width = 1
     teachers = session.query(Teacher).filter(Teacher.kafedra_id==k_id).all()
-    for i in range(len(teachers)):
-        for j in range(len(teachers)):
-            if teachers[i].name[0] < teachers[j].name[0]:
-                teachers[i], teachers[j] = teachers[j], teachers[i]
+    teachers = sorted(teachers, key=lambda teacher: teacher.name)
     ins = []
     for teach in teachers:
         ins.append(telebot.types.InlineKeyboardButton(teach.name, callback_data="t_" + str(teach.id)))

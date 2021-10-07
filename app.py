@@ -1,7 +1,7 @@
 import telebot
 
 from models import *
-TOKEN = "1258084373:AAFnxvjZ67Gx4iMROrCtyk21h981G-4xJWE"
+TOKEN = "2042929004:AAFzLnDmZjblIPTlRy9TIpQAKg8-VcBWRf8"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 
@@ -13,8 +13,9 @@ def gen_kafedra_inline():
     kfds = session.query(Kafedra).all()
     kfds = sorted(kfds, key=lambda kaf: kaf.name)
     f = []
-    for kf in kfds:
-        f.append(telebot.types.InlineKeyboardButton(kf.name, callback_data="k_" + str(kf.id)))
+
+    for idx, val in enumerate(kfds) :
+        f.append(telebot.types.InlineKeyboardButton("%d.%s"%(idx+1, val.name), callback_data="k_" + str(val.id)))
     f.append(telebot.types.InlineKeyboardButton("❎ Ортга қайтиш", callback_data="k_0"))
     markup.add(*f)
     return markup
@@ -119,6 +120,7 @@ def get_msg(message):
             type = ss.type,
             chat_id = chat_id
         )
+        ss.step = "done"
         session.add(co)
         session.commit()
         bot.send_message(chat_id,"Сизнинг мурожатингиз қабул қилинди, сизнинг шахсингиз махфийлигича қолади")

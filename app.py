@@ -130,6 +130,6 @@ def get_msg(message):
     
 
 
-if __name__ == "__main__":
-    bot.infinity_polling()
-    session.close()
+
+bot.polling(none_stop=True)
+session.close()

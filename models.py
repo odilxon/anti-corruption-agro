@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import null
 
 meta = MetaData()
 Base = declarative_base()
-engine = create_engine("postgresql://jwqehlbgqqccue:e01646e470195a8fe1b15b97168da6e914cf68d57002b2a6eeec2f60d30b2f65@ec2-54-208-96-16.compute-1.amazonaws.com:5432/d1a4a5ac5u5quh")
+engine = create_engine("postgresql://antiagro:antiagro@192.168.43.12:5432/antiagro")
 
 Session = sessionmaker(bind=engine)
 session = Session()

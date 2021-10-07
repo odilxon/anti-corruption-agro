@@ -14,7 +14,7 @@ def gen_kafedra_inline():
     kfds = sorted(kfds, key=lambda kaf: kaf.name)
     f = []
 
-    for idx, val in enumerate(kfds) :
+    for idx, val in enumerate(kfds):
         f.append(telebot.types.InlineKeyboardButton("%d.%s"%(idx+1, val.name), callback_data="k_" + str(val.id)))
     f.append(telebot.types.InlineKeyboardButton("❎ Ортга қайтиш", callback_data="k_0"))
     markup.add(*f)

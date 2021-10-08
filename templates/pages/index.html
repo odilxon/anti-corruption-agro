@@ -180,9 +180,21 @@
                     <div class="col-sm-3">
                       <div class="form-group">
                         <label for="type">Мурожат тури</label>
-                        <select name="type" id="type" class="form-control select2" multiple aria-placeholder="Type" title="Type">
+                        <select name="type" id="type" class="form-control select2" multiple placeholder="" title="Type">
+                          <option {% if 'all' in selected_list or selected_list|length == 0 %} selected {% endif %} value="all"> Барчаси </option>
                           {% for type in type_list %}
-                          <option value="{{ type }}">{{ type }}</option>
+                          <option {% if type[0] in selected_list %} selected {% endif %} value="{{ type[0] }}">{{ type[1] }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="type">Кафедра боича</label>
+                        <select name="kafedra" id="kafedra" class="form-control select2" multiple placeholder="" title="Type">
+                          <option {% if 'all' in kaf_selected_list or kaf_selected_list|length == 0 %} selected {% endif %} value="all"> Барчаси </option>
+                          {% for name, id in kafedra_list %}
+                          <option {% if id in kaf_selected_list %} selected {% endif %} value="{{ id }}">{{ name }}</option>
                           {% endfor %}
                         </select>
                       </div>
@@ -225,6 +237,8 @@
                 <b>Kafedra:</b> {{ data[i][2].name }} <br>
                 <b>O'qituvchi:</b> {{ data[i][1].name }} <br>
                 <b>Shikoyat:</b> {{ data[i][0].message }} <br>
+                {% elif data[i][0].type == 'warning' %}
+                <b> Etiroz:</b> {{ data[i][0].message }}
                 {% else %}
                 <b> Taklif:</b> {{ data[i][0].message }}
                 {% endif %}
@@ -247,6 +261,8 @@
                 <b>Kafedra:</b> {{ data[i+1][2].name }} <br>
                 <b>O'qituvchi:</b> {{ data[i+1][1].name }} <br>
                 <b>Shikoyat:</b> {{ data[i+1][0].message }} <br>
+                {% elif data[i+1][0].type == 'warning' %}
+                <b> Etiroz:</b> {{ data[i+1][0].message }}
                 {% else %}
                 <b> Taklif:</b> {{ data[i+1][0].message }}
                 {% endif %}
@@ -269,6 +285,8 @@
                 <b>Kafedra:</b> {{ data[i+2][2].name }} <br>
                 <b>O'qituvchi:</b> {{ data[i+2][1].name }} <br>
                 <b>Shikoyat:</b> {{ data[i+2][0].message }} <br>
+                {% elif data[i+2][0].type == 'warning' %}
+                <b> Etiroz:</b> {{ data[i+2][0].message }}
                 {% else %}
                 <b> Taklif:</b> {{ data[i+2][0].message }}
                 {% endif %}

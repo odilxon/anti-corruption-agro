@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/summernote/summernote-bs4.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='plugins/select2/css/select2.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -156,21 +158,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Dashboard</h1>
           </div><!-- /.col -->
-          <div class="col-sm-6">
-            <form method="GET">
-              <div class="row">
-                <h3>By Type</h3>
-                <select name="type" class="select2" multiple aria-placeholder="Type" title="Type">
-                  {% for type in type_list %}
-                  <option value="{{ type }}">{{ type }}</option>
-                  {% endfor %}
-                </select>
-                <h3>By Name</h3>
-                <input name="keyword" type="text" class="keyword-input" placeholder="e.g. username"/>
-                <button type="submit" class="button">Apply Filters</button>
-              </div>
-            </form>
-          </div><!-- /.col -->
+          <!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -178,9 +166,49 @@
 
     <!-- Main content -->
     <section class="content">
-      <div class="container-fluid t1">
+      <div class="container-fluid ">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header">
+
+              </div>
+              <div class="card-body">
+                <form method="GET" id="filter">
+                  <div class="row">
+                    
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="type">Мурожат тури</label>
+                        <select name="type" id="type" class="form-control select2" multiple aria-placeholder="Type" title="Type">
+                          {% for type in type_list %}
+                          <option value="{{ type }}">{{ type }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="keyword">Фойдаланувчи</label>
+                        <input name="keyword" id="keyword" type="text" class="form-control keyword-input" placeholder="e.g. username"/>
+                      </div>
+                    </div>
+                    
+                    
+                    
+                    
+                  </div>
+                </form>
+              </div>
+              <div class="card-footer">
+                <button  form="filter" type="submit" class="btn btn-outline-success">Apply Filters</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- Small boxes (Stat box) -->
-        
+        <div class="t1">
         {% for i in range(0,data|length,3) %}
         <div class="row">
           <div class="col-lg-4">
@@ -250,6 +278,7 @@
           {% endif %}
         </div>
         {% endfor %}
+      </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
@@ -299,11 +328,18 @@
 <script src="{{url_for('static', filename='plugins/summernote/summernote-bs4.min.js')}}"></script>
 <!-- overlayScrollbars -->
 <script src="{{url_for('static', filename='plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/select2/js/select2.full.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{url_for('static', filename='js/adminlte.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script>
   $(document).ready(function() {
+
+
+    $(".select2").select2({
+      theme: 'bootstrap4'
+    });
+
   $('.t1').after('<div id="nav" class="text-center"></div>');
   var rowsShown = 3;
   var rowsTotal = $('.t1 .row').length;

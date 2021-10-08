@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import func, and_, or_, delete, create_engine, text, MetaData, Integer, String, Column, ForeignKey, Date, Time, DateTime, Boolean, extract
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, subqueryload, joinedload, relationship
@@ -44,8 +45,8 @@ class Complain(Base):
     teacher_id = Column(Integer, ForeignKey("teacher.id"))
     first_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
-    chat_id = Column(Integer, nullable=True)
-    created_time = Column(DateTime, nullable=False)
+    chat_id = Column(Integer,  nullable=True)
+    created_time = Column(DateTime,default=datetime.now, nullable=False)
 
 class Session(Base):
     __tablename__ = 'session'

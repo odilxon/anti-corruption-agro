@@ -113,8 +113,34 @@ def send_welcome(message):
     session.commit()
 
     bot.reply_to(message, "Ассалому алайкум. Таклиф ва шикоятларингизни аноним холда қолдиришингиз мумкин:", reply_markup=gen_type_complain())
+@bot.message_handler(content_types=['document'])
+def doc(message):
+    print('message.photo =', message.photo)
+    fileID = message.document.file_id
+    print ('fileID =', fileID)
+    file = bot.get_file(fileID)
+    ext = file.file_path.rsplit('.', 1)[1].lower()
+    print ('file.file_path =', file)
+    downloaded_file = bot.download_file(file.file_path)
+    src = "static/bot/" + message.document.file_name
+    with open(src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+@bot.message_handler(content_types=['photo'])
+def photo(message):
+    new = {}
+    
+    for photo in message.photo:
+        print(photo)
+        fileID = photo.file_id
+        file = bot.get_file(fileID)
+        ext = file.file_path.rsplit('.', 1)[1].lower()
+        downloaded_file = bot.download_file(file.file_path)
+        src = "static/bot/" + photo.file_id + "_" + str(photo.file_size) + "." + ext
+        with open(src, 'wb') as new_file:
+            new_file.write(downloaded_file)
 @bot.message_handler(func=lambda message: True)
 def get_msg(message):
+    
     chat_id = message.chat.id
     ss = session.query(Session).filter(Session.chat_id==chat_id).first()
     if ss.step == "text":
@@ -125,8 +151,8 @@ def get_msg(message):
             first_name = ss.first_name,
             username = ss.username,
             type = ss.type,
-            chat_id = chat_id,
-            created_time = DateTime.datetime.now()
+            chat_id = chat_id
+            
         )
         ss.step = "done"
         session.add(co)

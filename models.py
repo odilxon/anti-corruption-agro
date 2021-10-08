@@ -45,6 +45,7 @@ class Complain(Base):
     first_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
     chat_id = Column(Integer, nullable=True)
+    created_time = Column(DateTime, nullable=False)
 
 class Session(Base):
     __tablename__ = 'session'

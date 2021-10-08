@@ -125,7 +125,8 @@ def get_msg(message):
             first_name = ss.first_name,
             username = ss.username,
             type = ss.type,
-            chat_id = chat_id
+            chat_id = chat_id,
+            created_time = DateTime.datetime.now()
         )
         ss.step = "done"
         session.add(co)

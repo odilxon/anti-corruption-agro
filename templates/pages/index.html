@@ -203,19 +203,19 @@
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label for="keyword">Фойдаланувчи</label>
-                        <input name="keyword" id="keyword" type="text" class="form-control keyword-input" {% if filter_keyword|length > 0 %} value="{{filter_keyword}}" {% endif %} placeholder="e.g. username"/>
+                        <input name="keyword" id="keyword" type="text" class="form-control keyword-input" {% if filter_keyword %} value="{{filter_keyword}}" {% endif %} placeholder="e.g. username"/>
                       </div>
                     </div>
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label for="keyword">Бу сондан</label>
-                        <input name="start_date" id="start_d" type="date" class="form-control keyword-input" {% if filter_start_date %} value="{{filter_start_date}}" {% endif %}/>
+                        <input name="start_date" id="start_d" type="date" class="form-control keyword-input"/>
                       </div>
                     </div>
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label for="keyword">Шу сонгача</label>
-                        <input name="end_date" id="end_d" type="date" class="form-control keyword-input" {% if filter_end_date%} value="{{filter_end_date}}" {% endif %}/>
+                        <input name="end_date" id="end_d" type="date" class="form-control keyword-input" />
                       </div>
                     </div>
                   </div>

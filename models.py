@@ -19,6 +19,14 @@ class Kafedra(Base):
     sessions = relationship("Session", backref="kafedra", lazy=True)
 
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    token = Column(String, nullable=False)
+
+
 class Teacher(Base):
     __tablename__ = 'teacher'
     id = Column(Integer, primary_key=True)

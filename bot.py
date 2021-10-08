@@ -36,7 +36,9 @@ def gen_type_complain():
     markup = telebot.types.InlineKeyboardMarkup()
     markup.row_width = 1
     markup.add(telebot.types.InlineKeyboardButton("Таклиф", callback_data="type_positive"),
-    telebot.types.InlineKeyboardButton("Шикоят", callback_data="type_negative"))
+    telebot.types.InlineKeyboardButton("Шикоят", callback_data="type_negative"),
+    telebot.types.InlineKeyboardButton("Эътироз", callback_data="type_warning"),
+    )
     return markup
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
@@ -48,11 +50,16 @@ def callback_query(call):
         ss.type = _type
         if _type == "positive":
             t = "Таклиф"
+        elif _type == "warning":
+            t = "Эътироз"
         else:
             t = "Шикоят"
         bot.edit_message_text("Мурожат тури: " + t, call.message.chat.id,call.message.id,reply_markup=None)
         if _type == "negative":
             bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
+        elif _type == "warning":
+            bot.send_message(call.message.chat.id, "Эътироз матнини киритинг:")
+            ss.step = "text"
         else:
             bot.send_message(call.message.chat.id, "Таклиф матнини киритинг")
             ss.step = "text"

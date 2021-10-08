@@ -1,3 +1,4 @@
+from datetime import datetime
 from models import *
 from flask import *
 app = Flask(__name__)
@@ -25,6 +26,8 @@ def index_page():
     filter_type = request.args.getlist('type')
     filter_keyword = request.args.get('keyword')
     filter_kaf = request.args.getlist('kafedra')
+    filter_start_date = request.args.get('start_date')
+    filter_end_date = request.args.get('end_date')
     kafedra_list = [(i.name, i.id) for i in session.query(Kafedra).all()]
     type_list = [('negative', "Shikoyat"), ('warning', 'Etiroz'), ('positive', "Taklif")]
     selected_list = filter_type
@@ -40,9 +43,19 @@ def index_page():
         data = data.filter(or_(Complain.first_name.ilike('%' + str(filter_keyword.lower()) + '%'), Complain.username.ilike('%' + str(filter_keyword.lower()) + '%')))
     if filter_kaf and 'all' not in filter_kaf:
         data = data.filter(Kafedra.id.in_(filter_kaf))
+    if filter_start_date and filter_end_date:
+        filter_start_date = datetime.strptime(filter_start_date, "%Y-%m-%d")
+        filter_end_date = datetime.strptime(filter_end_date, "%Y-%m-%d")
+        data = data.filter(Complain.created_time.between(filter_start_date,filter_end_date))
     data = data.all()
     # data = sorted(data, key=lambda kafedra: kafedra.name)
-    return render_template('pages/index.html', data=data, type_list=type_list, selected_list=selected_list, kafedra_list=kafedra_list, kaf_selected_lis=kaf_selected_list)
+    return render_template('pages/index.html', \
+    data=data, type_list=type_list, \
+    selected_list=selected_list, kafedra_list=kafedra_list, \
+    kaf_selected_lis=kaf_selected_list, \
+    filter_keyword=filter_keyword, \
+    filter_start_date=datetime.strftime(filter_start_date, "%d.%m.%Y"), \
+    filter_end_date=datetime.strftime(filter_end_date, "%d.%m.%Y"))
 
 
 session.close()

@@ -49,7 +49,13 @@ def index_page():
         data = data.filter(Complain.created_time.between(filter_start_date,filter_end_date))
     data = data.all()
     # data = sorted(data, key=lambda kafedra: kafedra.name)
-    return render_template('pages/index.html', data=data, type_list=type_list, selected_list=selected_list, kafedra_list=kafedra_list, kaf_selected_lis=kaf_selected_list)
+    return render_template('pages/index.html', \
+    data=data, type_list=type_list, \
+    selected_list=selected_list, kafedra_list=kafedra_list, \
+    kaf_selected_lis=kaf_selected_list, \
+    filter_keyword=filter_keyword, \
+    filter_start_date=datetime.strftime(filter_start_date, "%d.%m.%Y"), \
+    filter_end_date=datetime.strftime(filter_end_date, "%d.%m.%Y"))
 
 
 session.close()

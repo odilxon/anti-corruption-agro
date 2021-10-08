@@ -1,4 +1,4 @@
-from sqlalchemy import func, and_, delete, create_engine, text, MetaData, Integer, String, Column, ForeignKey, Date, Time, DateTime, Boolean, extract
+from sqlalchemy import func, and_, or_, delete, create_engine, text, MetaData, Integer, String, Column, ForeignKey, Date, Time, DateTime, Boolean, extract
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, subqueryload, joinedload, relationship
 from sqlalchemy.sql.expression import null
@@ -19,6 +19,14 @@ class Kafedra(Base):
     sessions = relationship("Session", backref="kafedra", lazy=True)
 
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    token = Column(String, nullable=False)
+
+
 class Teacher(Base):
     __tablename__ = 'teacher'
     id = Column(Integer, primary_key=True)
@@ -37,6 +45,7 @@ class Complain(Base):
     first_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
     chat_id = Column(Integer, nullable=True)
+    created_time = Column(DateTime, nullable=False)
 
 class Session(Base):
     __tablename__ = 'session'

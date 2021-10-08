@@ -54,8 +54,7 @@ def index_page():
     selected_list=selected_list, kafedra_list=kafedra_list, \
     kaf_selected_lis=kaf_selected_list, \
     filter_keyword=filter_keyword, \
-    filter_start_date=datetime.strftime(filter_start_date, "%d.%m.%Y"), \
-    filter_end_date=datetime.strftime(filter_end_date, "%d.%m.%Y"))
+    )
 
 
 session.close()

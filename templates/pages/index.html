@@ -157,10 +157,19 @@
             <h1 class="m-0">Dashboard</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
+            <form method="GET">
+              <div class="row">
+                <h3>By Type</h3>
+                <select name="type" class="select2" multiple aria-placeholder="Type" title="Type">
+                  {% for type in type_list %}
+                  <option value="{{ type }}">{{ type }}</option>
+                  {% endfor %}
+                </select>
+                <h3>By Name</h3>
+                <input name="keyword" type="text" class="keyword-input" placeholder="e.g. username"/>
+                <button type="submit" class="button">Apply Filters</button>
+              </div>
+            </form>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -177,7 +186,7 @@
           <div class="col-lg-4">
             
             <div class="card">
-              <div class="card-header {% if data[i][0].type == 'negative' %} bg-danger {% else %} bg-success {% endif %}">
+              <div class="card-header {% if data[i][0].type == 'negative' %} bg-danger {% elif data[i][0].type == 'warning' %} bg-warning {% else %} bg-success {% endif %}">
                 <h1 class="card-title">
                   <a target="_blank" style="text-decoration: underline;"  class="text-white" href="https://t.me/{{data[i][0].username}}">@{{ data[i][0].username }} </a> 
                 </h1>
@@ -199,7 +208,7 @@
           <div class="col-lg-4">
            
             <div class="card">
-              <div class="card-header {% if data[i+1][0].type == 'negative' %} bg-danger {% else %} bg-success {% endif %}">
+              <div class="card-header {% if data[i+1][0].type == 'negative' %} bg-danger {% elif data[i+1][0].type == 'warning' %} bg-warning {% else %} bg-success {% endif %}">
                 <h1 class="card-title">
                   <a target="_blank" style="text-decoration: underline;"  class="text-white" href="https://t.me/{{data[i+1][0].username}}">@{{ data[i+1][0].username }} </a> 
                 </h1>
@@ -221,7 +230,7 @@
           <div class="col-lg-4">
             
             <div class="card">
-              <div class="card-header {% if data[i+2][0].type == 'negative' %} bg-danger {% else %} bg-success {% endif %}">
+              <div class="card-header {% if data[i+2][0].type == 'negative' %} bg-danger {% elif data[i+2][0].type == 'warning' %} bg-warning {% else %} bg-success {% endif %}">
                 <h1 class="card-title">
                   <a target="_blank" style="text-decoration: underline;"  class="text-white" href="https://t.me/{{data[i+2][0].username}}">@{{ data[i+2][0].username }} </a> 
                 </h1>

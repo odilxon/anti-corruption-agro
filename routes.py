@@ -22,12 +22,19 @@ def login_page():
 
 @app.route('/', methods=['GET'])
 def index_page():
+    filter_type = request.args.getlist('type')
+    filter_keyword = request.args.get('keyword')
+    type_list = ['negative', 'warning', 'positive']
     data = session.query(Complain, Teacher, Kafedra)\
         .outerjoin(Teacher, Complain.teacher_id==Teacher.id)\
         .outerjoin(Kafedra, Kafedra.id==Teacher.kafedra_id)\
-        .order_by(Complain.id.desc()).all()
-
-    return render_template('pages/index.html', data=data)
+        .order_by(Complain.id.desc())
+    if filter_type:
+        data = data.filter(Complain.type.in_(filter_type))
+    if filter_keyword:
+        data = data.filter(or_(Complain.first_name.ilike('%' + str(filter_keyword.lower()) + '%'), Complain.username.ilike('%' + str(filter_keyword.lower()) + '%')))
+    data = data.all()
+    return render_template('pages/index.html', data=data, type_list=type_list)
 
 
 session.close()

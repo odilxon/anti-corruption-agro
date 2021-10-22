@@ -42,7 +42,8 @@ class Complain(Base):
     id = Column(Integer, primary_key=True)
     message = Column(String, nullable=False)
     type = Column(String, nullable=True)
-    teacher_id = Column(Integer, ForeignKey("teacher.id"))
+    category = Column(String, nullable=True)
+    teacher_id = Column(Integer, ForeignKey("teacher.id"), nullable=True)
     first_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
     chat_id = Column(Integer,  nullable=True)
@@ -57,6 +58,7 @@ class Session(Base):
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     step = Column(String, nullable=True)
+    category = Column(String, nullable=True)
     type = Column(String, nullable=True)
     username = Column(String, nullable=True)
 
@@ -65,7 +67,7 @@ def Reset():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-#Reset()
+# Reset()
 
 session.close()
 

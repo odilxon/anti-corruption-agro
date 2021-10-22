@@ -5,8 +5,18 @@ TOKEN = "2042929004:AAFzLnDmZjblIPTlRy9TIpQAKg8-VcBWRf8"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 
+categories = ['Ошхона', 'Укитувчи', 'TTJ (Йотокхона)', 'Хожатхона']
 
-
+def gen_category_inline():
+    global categories
+    markup = telebot.types.InlineKeyboardMarkup()
+    markup.row_width = 1
+    f = []
+    for i in categories:
+        f.append(telebot.types.InlineKeyboardButton("%s"%(i), callback_data="c_" + str(i).lower()))
+    f.append(telebot.types.InlineKeyboardButton("❎ Ортга қайтиш", callback_data="c_0"))
+    markup.add(*f)
+    return markup
 def gen_kafedra_inline():
     markup = telebot.types.InlineKeyboardMarkup()
     markup.row_width = 1
@@ -42,6 +52,7 @@ def gen_type_complain():
     return markup
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    global categories
     chat_id = call.message.chat.id
     ss = session.query(Session).filter(Session.chat_id==chat_id).first()
     if "type_" in call.data:
@@ -52,11 +63,12 @@ def callback_query(call):
             t = "Таклиф"
         elif _type == "warning":
             t = "Эътироз"
-        else:
+        elif _type == "negative":
             t = "Шикоят"
         bot.edit_message_text("Мурожат тури: " + t, call.message.chat.id,call.message.id,reply_markup=None)
         if _type == "negative":
-            bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
+            bot.send_message(call.message.chat.id, "Шикоят категориясини танланг:", reply_markup=gen_category_inline())
+            # bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
         elif _type == "warning":
             bot.send_message(call.message.chat.id, "Эътироз матнини киритинг:")
             ss.step = "text"
@@ -64,11 +76,25 @@ def callback_query(call):
             bot.send_message(call.message.chat.id, "Таклиф матнини киритинг")
             ss.step = "text"
         session.commit()
-        
+    
+    if "c_" in call.data:
+        c_id = call.data.replace("c_", "")
+        if c_id == "0":
+            bot.send_message(call.message.chat.id, "Ассалому алайкум. Таклиф ва шикоятларингизни аноним холда қолдиришингиз мумкин:", reply_markup=gen_type_complain())
+            bot.delete_message(call.message.chat.id,call.message.id)
+        else:
+            bot.edit_message_text("Категория: " + c_id, call.message.chat.id,call.message.id,reply_markup=None)
+            if c_id == 'укитувчи':
+                bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
+            else:
+                bot.send_message(call.message.chat.id, "Эътироз матнини киритинг:")
+                ss.step = "text"
+                ss.category = c_id
+                session.commit()
     if "k_" in call.data:
         k_id = int(call.data.replace("k_", ""))
         if k_id == 0:
-            bot.send_message(call.message.chat.id, "Ассалому алайкум. Таклиф ва шикоятларингизни аноним холда қолдиришингиз мумкин:", reply_markup=gen_type_complain())
+            bot.send_message(call.message.chat.id, "Шикоят категориясини танланг:", reply_markup=gen_category_inline())
             bot.delete_message(call.message.chat.id,call.message.id)
         else:
             k = session.query(Kafedra).get(k_id).name

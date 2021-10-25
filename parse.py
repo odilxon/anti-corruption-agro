@@ -18,6 +18,8 @@ for index, row_data in data.iterrows():
     kafa = kaf.replace(".", "")
     if kafa[0] == " ":
         kafa = kafa[1::]
+    # if kafa not in completed_json:
+    #     completed_json.append(kafa)
     if not session.query(Kafedra).filter_by(name=kafa).first():
         kaf = Kafedra(name=kafa)
         session.add(kaf)
@@ -32,7 +34,7 @@ for index, row_data in data.iterrows():
     session.add(teach)
     session.commit()
 session.close()
-# with open('padrabnee.json', 'w', encoding='utf-8') as outfile:
-#     outfile.write(json.dumps(completed_json, ensure_ascii=False, indent=4))
-#     outfile.close()
+with open('kafedra.json', 'w', encoding='utf-8') as outfile:
+    outfile.write(json.dumps(completed_json, ensure_ascii=False, indent=4))
+    outfile.close()
 

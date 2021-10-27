@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import null
 
 meta = MetaData()
 Base = declarative_base()
-engine = create_engine("postgresql://antiagro:antiagro@192.168.43.12:5432/antiagro")
+engine = create_engine("postgresql://antiagro:antiagro@192.168.137.1:5432/antiagro")
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -49,6 +49,7 @@ class Complain(Base):
     chat_id = Column(Integer,  nullable=True)
     created_time = Column(DateTime,default=datetime.now, nullable=False)
 
+
 class Session(Base):
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True)
@@ -68,6 +69,7 @@ def Reset():
     Base.metadata.create_all(bind=engine)
 
 # Reset()
+categories = ['Ошхона', 'Укитувчи', 'TTJ (Йотокхона)', 'Хожатхона']
 
 session.close()
 

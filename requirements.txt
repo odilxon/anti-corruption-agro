@@ -2,7 +2,7 @@ flask
 openpyxl
 pandas
 pip-chill
-psycopg2
+psycopg2-binary
 pytelegrambotapi
 sqlalchemy
 xlrd

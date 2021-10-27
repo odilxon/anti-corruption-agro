@@ -1,0 +1,155 @@
+{% extends 'base.html'  %}
+
+{% block title %} 
+
+Список заявок
+
+{% endblock %}
+
+{% block css %}
+<style>
+  .kaf-filter {
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block  content %}
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header bg-navy">
+        <h3 class="card-title"> Фильтры </h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm">
+            <div class="form-group">
+              <label for="type"> Тури </label>
+              <select name="type" id="type" class="form-control">
+                <option value="all"> Барчаси </option>
+                <option value="positive"> Таклиф </option>
+                <option value="warning"> Этироз </option>
+                <option value="negative"> Шикоят </option>
+              </select>
+            </div> 
+          </div>
+          <div class="col-sm">
+            <div class="form-group">
+              <label for="category">Категория</label>
+                <select name="category" id="category" class="form-control">
+                  <option value="all">Барчаси</option>
+                  {% for cat in data['cats'] %}
+                  <option value="{{cat}}">{{cat}}</option>
+                  {% endfor %}
+                </select>
+                
+            </div>
+          </div>
+          <div class="col-sm kaf-filter" >
+            <div class="form-group">
+              <label for="kafedra">Кафедра</label>
+                <select name="kafedra" id="kafedra" class="form-control">
+                  <option value="all">Барчаси</option>
+                  {% for kaf in data['kafedra'] %}
+                  <option value="{{kaf.id}}">{{kaf.name}}</option>
+                  {% endfor %}
+                </select>
+                
+            </div>
+          </div>
+          <div class="col-sm" style="display: none;">
+            <div class="form-group">
+              <label for="keyword">Бу сондан</label>
+              <input name="start_date" id="start_d" type="date" class="form-control keyword-input"/>
+            </div>
+          </div>
+          <div class="col-sm" style="display: none;">
+            <div class="form-group">
+              <label for="keyword">Шу сонгача</label>
+              <input name="end_date" id="end_d" type="date" class="form-control keyword-input" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button id="show" type="button" class="btn btn-outline-success float-right"> Курсатиш </button>
+      </div>
+    </div>
+    <div class="card">
+        <div class="card-header bg-navy ">
+          <h3 class="card-title"> Список заявок </h3>
+        </div>
+        <div class="card-body">
+         
+              <table class="table table-stripped">
+                <thead>
+                    <tr>
+                        <th> ID </th>
+                        <th> Тип </th>
+                        <th> Категория </th>
+                        <th> Управление </th>
+                    </tr>
+                </thead>
+                <tbody id="t_body">
+                    
+                </tbody>
+              </table>
+          
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+  var API_URL = window.location.origin + "/api/";
+  $(document).ready(function(){
+
+    $("#category").change(function(){
+      if($(this).val() == 'Укитувчи')
+        $(".kaf-filter").show();
+      else $(".kaf-filter").hide();
+
+
+    });
+    $("#show").click(function(){
+      
+      var data = {
+        type: $("#type").val(),
+        category: $("#category").val(),
+        s_date : $("#start_d").val(),
+        e_date : $("#end_d").val()
+      }
+
+      if (data['s_date'] != '' || data['e_date'] != '')
+      {
+        toastr.error("Саналарни танланг");
+      }
+      else {
+        $.ajax({
+          type: "POST",
+          url : API_URL + "/main",
+          data: data,
+          success: function(data) {
+            $("#t_body").empty();
+            
+            for(var i=0; i<data.length; i++) {
+              var b = '<a class="btn btn-outline-info" href="/complain/'+ data[i]['id'] + '"> Показать </a>';
+              var d = "<tr> <td> " + data[i]['id'] + "</td>";
+                d += "<td>" + data[i]['type'] + "</td>";
+                d += "<td>" + data[i]['category'] + "</td>";
+                d += "<td>" + b + "</td></tr>";
+                $("#t_body").append(d);
+            }
+          }
+        });
+      }
+      
+    });
+
+  })
+</script>
+{% endblock %}

@@ -5,7 +5,6 @@ TOKEN = "2042929004:AAFzLnDmZjblIPTlRy9TIpQAKg8-VcBWRf8"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 
-categories = ['Ошхона', 'Укитувчи', 'TTJ (Йотокхона)', 'Хожатхона']
 
 def gen_category_inline():
     global categories
@@ -86,6 +85,8 @@ def callback_query(call):
             bot.edit_message_text("Категория: " + c_id, call.message.chat.id,call.message.id,reply_markup=None)
             if c_id == 'укитувчи':
                 bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
+                ss.category = c_id
+                session.commit()
             else:
                 bot.send_message(call.message.chat.id, "Эътироз матнини киритинг:")
                 ss.step = "text"
@@ -176,6 +177,7 @@ def get_msg(message):
             teacher_id=ss.teacher_id,
             first_name = ss.first_name,
             username = ss.username,
+            category = ss.category,
             type = ss.type,
             chat_id = chat_id
             

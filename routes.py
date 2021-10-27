@@ -23,6 +23,7 @@ def login_page():
 
 @app.route('/', methods=['GET'])
 def index_page():
+    return redirect(url_for('main_app'))
     filter_type = request.args.getlist('type')
     filter_keyword = request.args.get('keyword')
     filter_kaf = request.args.getlist('kafedra')
@@ -57,4 +58,54 @@ def index_page():
     )
 
 
+@app.route("/api/main", methods=['POST'])
+def api_main():
+    
+    form = request.form
+
+    _type = form.get("type")
+    category = form.get("category")
+    s_date = form.get("s_date")
+    e_date = form.get("e_date")
+    
+    query = session.query(Complain)
+        # .join(Teacher, Teacher.id==Complain.teacher_id)\
+        # .join(Kafedra, Kafedra.id == Teacher.kafedra_id)
+    if _type != "all":
+        query = query.filter(Complain.type == _type)
+    if category != "all":
+        query = query.filter(Complain.category == category)
+    
+    coms = query.all()
+    cc = []
+    for com in coms:
+        ca = "-"
+        if com.category is not None:
+            ca = com.category
+        
+        C = {
+            "id" : com.id,
+            "type" : com.type,
+            "category" : ca
+        }
+        cc.append(C)
+    return jsonify(cc)    
+
+@app.route("/main", methods=['GET', "POST"])
+def main_app():
+    global categories
+    kafedra = session.query(Kafedra).all()
+    kafedra = sorted(kafedra, key=lambda kaf: kaf.name)
+    data = {
+        "cats" : categories,
+        "kafedra" : kafedra
+    }
+    return render_template("pages/list.html", data=data)
+
+@app.route("/complain/<int:c_id>")
+def comp_i(c_id):
+    c = session.query(Complain).get(c_id)
+    if c is None:
+        abort(404)
+    
 session.close()

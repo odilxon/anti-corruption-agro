@@ -86,7 +86,9 @@ def api_main():
         C = {
             "id" : com.id,
             "type" : com.type,
-            "category" : ca
+            "category" : ca,
+            "text" : com.message,
+            "date" : com.created_time.strftime("%Y-%m-%d  %H:%M:%S")
         }
         cc.append(C)
     return jsonify(cc)    

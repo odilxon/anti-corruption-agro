@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/select2/css/select2.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/toastr/toastr.min.css')}}">
+  
   {% block css %} {% endblock %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -104,6 +105,16 @@
 <!-- AdminLTE App -->
 <script src="{{url_for('static', filename='js/adminlte.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="{{url_for('static', filename='plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/jszip/jszip.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/pdfmake/pdfmake.min.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/pdfmake/vfs_fonts.js')}}"></script>
+<script src="{{url_for('static', filename='plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+
 {% block js %}
 {% endblock %}
 </body>

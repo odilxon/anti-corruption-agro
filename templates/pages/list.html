@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 <style>
   .kaf-filter {
     display: none;
@@ -82,13 +84,14 @@
         </div>
         <div class="card-body">
          
-              <table class="table table-stripped">
+              <table class="table table-stripped" id="coms">
                 <thead>
                     <tr>
                         <th> ID </th>
                         <th> Тип </th>
                         <th> Категория </th>
-                        <th> Управление </th>
+                        <th> Вақти </th>
+                        <th> Сообщение </th>
                     </tr>
                 </thead>
                 <tbody id="t_body">
@@ -105,13 +108,14 @@
 
 {% block js %}
 <script>
+  window.alert = function() {};
   var API_URL = window.location.origin + "/api/";
   $(document).ready(function(){
 
     $("#category").change(function(){
       if($(this).val() == 'ўқитувчи')
         $(".kaf-filter").show();
-        
+
       else $(".kaf-filter").hide();
 
 
@@ -135,16 +139,31 @@
           url : API_URL + "main",
           data: data,
           success: function(data) {
-            $("#t_body").empty();
+            $("#t_body").html("");
             
             for(var i=0; i<data.length; i++) {
               var b = '<a class="btn btn-outline-info" href="/complain/'+ data[i]['id'] + '"> Показать </a>';
+              if (data[i]['type'] == 'warning')
+              var t = "<button class='btn btn-xs btn-warning'> Этироз </button>"
+              else if (data[i]['type'] == 'positive')
+              var t = "<button class='btn btn-xs btn-success'> Таклиф </button>"
+              else t = "<button class='btn btn-xs btn-danger'> Шикоят </button>"
               var d = "<tr> <td> " + data[i]['id'] + "</td>";
-                d += "<td>" + data[i]['type'] + "</td>";
+                d += "<td>" + t + "</td>";
                 d += "<td>" + data[i]['category'] + "</td>";
-                d += "<td>" + b + "</td></tr>";
+                d += "<td>" + data[i]['date'] + "</td>";
+                
+                d += "<td>" + data[i]['text'] + "</td></tr>";
                 $("#t_body").append(d);
             }
+            
+          },
+          complete: function(){
+            $("#coms").DataTable({
+                    "dom": 'Bfrtip',
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf",]
+                }).buttons().container();
           }
         });
       }

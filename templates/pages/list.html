@@ -40,7 +40,7 @@
                 <select name="category" id="category" class="form-control">
                   <option value="all">Барчаси</option>
                   {% for cat in data['cats'] %}
-                  <option value="{{cat}}">{{cat}}</option>
+                  <option value="{{cat|lower}}">{{cat}}</option>
                   {% endfor %}
                 </select>
                 
@@ -109,8 +109,9 @@
   $(document).ready(function(){
 
     $("#category").change(function(){
-      if($(this).val() == 'Укитувчи')
+      if($(this).val() == 'ўқитувчи')
         $(".kaf-filter").show();
+        
       else $(".kaf-filter").hide();
 
 
@@ -131,7 +132,7 @@
       else {
         $.ajax({
           type: "POST",
-          url : API_URL + "/main",
+          url : API_URL + "main",
           data: data,
           success: function(data) {
             $("#t_body").empty();

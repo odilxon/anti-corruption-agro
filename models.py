@@ -69,7 +69,7 @@ def Reset():
     Base.metadata.create_all(bind=engine)
 
 # Reset()
-categories = ['Ошхона', 'Укитувчи', 'TTJ (Йотокхона)', 'Хожатхона']
+categories = ['Ошхона', 'Ўқитувчи', 'TTJ (Ётоқхона)', 'Ҳожатхона']
 
 session.close()
 

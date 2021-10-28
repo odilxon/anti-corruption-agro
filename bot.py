@@ -1,7 +1,7 @@
 import telebot
 
 from models import *
-TOKEN = "2042929004:AAFzLnDmZjblIPTlRy9TIpQAKg8-VcBWRf8"
+TOKEN = "2042929004:AAGfG_7teyX17DFtTtfNX6WeRgHUqyXe-ds"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 
@@ -83,7 +83,7 @@ def callback_query(call):
             bot.delete_message(call.message.chat.id,call.message.id)
         else:
             bot.edit_message_text("Категория: " + c_id, call.message.chat.id,call.message.id,reply_markup=None)
-            if c_id == 'укитувчи':
+            if c_id == 'ўқитувчи':
                 bot.send_message(call.message.chat.id, "Кафедрани танланг:", reply_markup=gen_kafedra_inline())
                 ss.category = c_id
                 session.commit()
@@ -185,7 +185,7 @@ def get_msg(message):
         ss.step = "done"
         session.add(co)
         session.commit()
-        bot.send_message(chat_id,"Сизнинг мурожатингиз қабул қилинди, сизнинг шахсингиз махфийлигича қолади")
+        bot.send_message(chat_id,"Сизнинг мурожатингиз қабул қилинди, сизнинг шахсингиз махфийлигича қолади. Янги мурожат юбориш учун /start")
     else:
         bot.send_message(chat_id, "Шикоят юбориш учун /start")
 

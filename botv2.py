@@ -23,7 +23,7 @@ What? D
 Смотри здесь я написал этапы
 
 по рисунку будем правую часть делать
-
+c_
 категории динамично с базы
 если там учителей выбрали
 для учителей есть база
@@ -63,11 +63,29 @@ def Set_Session(user_id,next_step) -> bool:
     s = session.query(Session).filter()
 
 @bot.message_handler(commands=['start'])
-def send_welcome(message):
-    
-        
+def send_welcome(message):        
+    s = Session(
+        chat_id = message.chat.id,
+        first_name = message.from_user.first_name,
+        step = "category",
+        username = message.from_user.username
+    )
     bot.reply_to(message, "Ассалому алайкум. Таклиф ва шикоятларингизни аноним холда қолдиришингиз мумкин, категорияни танланг:",
         reply_markup=gen_model_markup(Category))
+    
+    session.add(s)
+    session.commit()
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    chat_id = call.message.chat.id
+    ss = session.query(Session).filter(Session.chat_id == chat_id).first()
+    if "c_" in call.data:
+        category_id = call.data.replace("c_","")
+        category = call.message.text
+        bot.edit_message_text(
+            "Мурожат мавзуси: " + category, call.message.chat.id, call.message.id, reply_markup=None)
 
 
 

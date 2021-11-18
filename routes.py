@@ -1,12 +1,8 @@
 from datetime import datetime
-from models import *
-from flask import *
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'internship'
+from api import *
 import functools
 
-Session = sessionmaker(bind=engine)
-session = Session()
+
 
 def login_required(func):
     @functools.wraps(func)
@@ -23,6 +19,7 @@ def login_page():
 
 @app.route('/', methods=['GET'])
 def index_page():
+    return redirect(url_for('main_app'))
     filter_type = request.args.getlist('type')
     filter_keyword = request.args.get('keyword')
     filter_kaf = request.args.getlist('kafedra')
@@ -57,4 +54,24 @@ def index_page():
     )
 
 
+    
+
+@app.route("/main", methods=['GET', "POST"])
+def main_app():
+    categories = session.query(Category).all() 
+    kafedra = session.query(Kafedra).all()
+    kafedra = sorted(kafedra, key=lambda kaf: kaf.name)
+    data = {
+        "cats" : categories,
+        "kafedra" : kafedra
+    }
+    return render_template("pages/list.html", data=data)
+
+@app.route("/complain/<int:c_id>")
+def comp_i(c_id):
+    c = session.query(Complain).get(c_id)
+    coplain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
+    if c is None:
+        abort(404)
+    return render_template("pages/complain.html")
 session.close()

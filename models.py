@@ -32,7 +32,6 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     kafedra_id = Column(Integer, ForeignKey("kafedra.id"))
-
 class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
@@ -40,6 +39,7 @@ class Category(Base):
     complains = relationship("Complain", backref='category', lazy=True)
 
 class Complain(Base):
+    
     __tablename__ = 'complain'
     id = Column(Integer, primary_key=True)
     category_id = Column(Integer, ForeignKey('category.id'))

@@ -42,7 +42,7 @@
                 <select name="category" id="category" class="form-control">
                   <option value="all">Барчаси</option>
                   {% for cat in data['cats'] %}
-                  <option value="{{cat|lower}}">{{cat}}</option>
+                  <option value="{{cat.id}}">{{cat.name}}</option>
                   {% endfor %}
                 </select>
                 
@@ -91,7 +91,7 @@
                         <th> Тип </th>
                         <th> Категория </th>
                         <th> Вақти </th>
-                        <th> Сообщение </th>
+                        <th> Бошқариш </th>
                     </tr>
                 </thead>
                 <tbody id="t_body">
@@ -152,8 +152,8 @@
                 d += "<td>" + t + "</td>";
                 d += "<td>" + data[i]['category'] + "</td>";
                 d += "<td>" + data[i]['date'] + "</td>";
+                d += "<td>" + b + "</td></tr>";
                 
-                d += "<td>" + data[i]['text'] + "</td></tr>";
                 $("#t_body").append(d);
             }
             

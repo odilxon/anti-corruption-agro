@@ -1,12 +1,8 @@
 from datetime import datetime
-from models import *
-from flask import *
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'internship'
+from api import *
 import functools
 
-Session = sessionmaker(bind=engine)
-session = Session()
+
 
 def login_required(func):
     @functools.wraps(func)
@@ -58,44 +54,11 @@ def index_page():
     )
 
 
-@app.route("/api/main", methods=['POST'])
-def api_main():
     
-    form = request.form
-
-    _type = form.get("type")
-    category = form.get("category")
-    s_date = form.get("s_date")
-    e_date = form.get("e_date")
-    
-    query = session.query(Complain)
-        # .join(Teacher, Teacher.id==Complain.teacher_id)\
-        # .join(Kafedra, Kafedra.id == Teacher.kafedra_id)
-    if _type != "all":
-        query = query.filter(Complain.type == _type)
-    if category != "all":
-        query = query.filter(Complain.category == category)
-    
-    coms = query.all()
-    cc = []
-    for com in coms:
-        ca = "-"
-        if com.category is not None:
-            ca = com.category
-        
-        C = {
-            "id" : com.id,
-            "type" : com.type,
-            "category" : ca,
-            "text" : com.message,
-            "date" : com.created_time.strftime("%Y-%m-%d  %H:%M:%S")
-        }
-        cc.append(C)
-    return jsonify(cc)    
 
 @app.route("/main", methods=['GET', "POST"])
 def main_app():
-    global categories
+    categories = session.query(Category).all() 
     kafedra = session.query(Kafedra).all()
     kafedra = sorted(kafedra, key=lambda kaf: kaf.name)
     data = {
@@ -107,7 +70,9 @@ def main_app():
 @app.route("/complain/<int:c_id>")
 def comp_i(c_id):
     c = session.query(Complain).get(c_id)
+    coplain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
     
+    return jsonify({"ss":4})
 session.close()

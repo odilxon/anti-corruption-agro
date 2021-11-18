@@ -73,6 +73,5 @@ def comp_i(c_id):
     coplain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
-    
-    return jsonify({"ss":4})
+    return render_template("pages/complain.html")
 session.close()

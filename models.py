@@ -39,7 +39,6 @@ class Category(Base):
     complains = relationship("Complain", backref='category', lazy=True)
 
 class Complain(Base):
-    
     __tablename__ = 'complain'
     id = Column(Integer, primary_key=True)
     category_id = Column(Integer, ForeignKey('category.id'))
@@ -53,8 +52,8 @@ class Complain(Base):
 class Complain_Data(Base):
     __tablename__ = 'complain_data'
     id = Column(Integer, primary_key=True)
-    complain_id = Column(Integer, ForeignKey('complain.id'))
-    key = Column(String, nullable=False) # kafedra_id, teacher_id, data(content of datatype), data_type(img,text,video,voice) 
+    complain_id = Column(Integer, ForeignKey('complain.id')) 
+    key = Column(String, nullable=False) # kafedra_id, teacher_id,  data_type(img,text,video,voice,doc) 
     value = Column(String, nullable=False)
 
 "го гс в тг? ок"

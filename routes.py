@@ -70,8 +70,13 @@ def main_app():
 @app.route("/complain/<int:c_id>")
 def comp_i(c_id):
     c = session.query(Complain).get(c_id)
-    coplain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
+    complain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
-    return render_template("pages/complain.html")
+    data = {}
+    data['complain'] = c
+    print(complain_data)
+    data['complain_data'] = complain_data # there array
+        
+    return render_template("pages/complain.html", data=data)
 session.close()

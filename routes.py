@@ -82,6 +82,6 @@ def comp_i(c_id):
     data = {}
     data['complain'] = c
     data['complain_data'] = complain_data # there array
-
+    print([(x.key, x.value) for x in complain_data])
     return render_template("pages/complain.html", data=data)
 session.close()

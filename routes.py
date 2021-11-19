@@ -73,10 +73,15 @@ def comp_i(c_id):
     complain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
+    for comp in complain_data:
+        if comp.key == 'kafedra_id':
+            comp.value = Kafedra.query.filter_by(id=comp.value).first()
+        if comp.key == 'teacher_id':
+            comp.value = Teacher.query.filter_by(id=comp.value).first()
+
     data = {}
     data['complain'] = c
-    print(complain_data)
     data['complain_data'] = complain_data # there array
-        
+
     return render_template("pages/complain.html", data=data)
 session.close()

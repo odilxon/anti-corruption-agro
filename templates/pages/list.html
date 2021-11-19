@@ -28,7 +28,7 @@
           <div class="col-sm">
             <div class="form-group">
               <label for="type"> Тури </label>
-              <select name="type" id="type" class="form-control">
+              <select name="type" id="type" class="form-select">
                 <option value="all"> Барчаси </option>
                 <option value="positive"> Таклиф </option>
                 <option value="warning"> Этироз </option>
@@ -39,7 +39,7 @@
           <div class="col-sm">
             <div class="form-group">
               <label for="category">Категория</label>
-                <select name="category" id="category" class="form-control">
+                <select name="category" id="category" class="form-select">
                   <option value="all">Барчаси</option>
                   {% for cat in data['cats'] %}
                   <option value="{{cat.id}}">{{cat.name}}</option>
@@ -51,7 +51,7 @@
           <div class="col-sm kaf-filter" >
             <div class="form-group">
               <label for="kafedra">Кафедра</label>
-                <select name="kafedra" id="kafedra" class="form-control">
+                <select name="kafedra" id="kafedra" class="form-select">
                   <option value="all">Барчаси</option>
                   {% for kaf in data['kafedra'] %}
                   <option value="{{kaf.id}}">{{kaf.name}}</option>

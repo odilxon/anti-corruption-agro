@@ -104,7 +104,8 @@
                         <div class="d-flex align-items-center mb-2">
                             <!--begin::Avatar-->
                             <div class="symbol symbol-35px symbol-circle">
-                                
+                                {% if c_d.key == 'kafedra_id' %} {{c_d.value}} {% endif %}
+                                {% if c_d.key == 'teacher_id' %} {{c_d.value}} {% endif %}
                             </div>
                             <!--end::Avatar-->
                             <!--begin::Details-->
@@ -116,18 +117,18 @@
                         {% if c_d.key == 'text' %}
                         <div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">{{c_d.value}}</div>
                         {% elif c_d.key == 'img' %}
-                        <img src="{{url_for('static', filename=c_d.value)}}" alt="img">
+                        <img src="{{c_d.value}}" alt="img">
                         {% elif c_d.key == 'video' %}
                         <video width="320" height="240" controls>
-                            <source src="{{url_for('static', filename=c_d.value)}}" type="video/{{c_d.value.split('.')[-1]}}">
+                            <source src="{{c_d.value}}" type="video/{{c_d.value.split('.')[-1]}}">
                         </video>
                         {% elif c_d.key == 'voice' %}
                         <audio controls>
-                            <source src="{{url_for('static', filename=c_d.value)}}" type="audio/{{c_d.value.split('.')[-1]}}">
+                            <source src="{{c_d.value}}" type="audio/{{c_d.value.split('.')[-1]}}">
                         </audio>
-                        {% elif c_d.key == 'doc' %}
+                        {% elif c_d.key == 'document' %}
                         <div class="attachments-container">
-                            <a href="{{url_for('static', filename=c_d.value)}}" class="ripple-effect attachment-box" download>Document</a>
+                            <a href="{{c_d.value}}" class="ripple-effect attachment-box" download>Document</a>
                         </div>
                         {% endif %}
 
@@ -152,9 +153,6 @@
                         </div>
                         <!--end::User-->
                         <!--begin::Text-->
-                        <audio controls>
-                            <source src="{{url_for('static', filename='bot/audio/1.ogg')}}" type="audio/ogg">
-                        </audio>
                                 
                         <!--end::Text-->
                     </div>

@@ -50633,6 +50633,7 @@ body {
 
 a.attachment-box {
   cursor: pointer;
+  width: 400px;
 }
 
 .attachment-box:before {

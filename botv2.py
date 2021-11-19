@@ -3,7 +3,7 @@ import telebot
 from models import *
 TOKEN = "2042929004:AAEgJShr8Ju6mTr-1ekczXkqP5qcVwaSNxA"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
-
+STATIC_PATH = 'static/bot/'
 '''
 |------------------------------------------------------|
 |           this is steps ----                         |
@@ -35,14 +35,7 @@ c_
 этироз warning таклиф success шикоят danger
 для сохранение одна таблица пройдика в models
 '''
-user_data = {
-    "chat_id":{
-        "text": "",
-        "img": "",
-        "video": "",
-        "audio": ""
-        }
-}
+user_data = { }
 
 
 type_keyboard = telebot.types.InlineKeyboardMarkup(row_width=1)
@@ -53,6 +46,11 @@ type_success = telebot.types.InlineKeyboardButton(
 type_danger = telebot.types.InlineKeyboardButton(
     "Шикоят", callback_data="danger")
 type_keyboard.add(type_warning,type_success,type_danger)
+
+LAST = telebot.types.ReplyKeyboardMarkup(True,one_time_keyboard=True)
+itembtn1 = telebot.types.KeyboardButton('Юбориш')
+
+LAST.add(itembtn1)
 
 
 def gen_model_markup(Item, is_teachers=False, kaf_id=0) -> list[telebot.types.InlineKeyboardButton]:
@@ -101,7 +99,7 @@ def send_welcome(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-    
+    print(call.data)
     chat_id = call.message.chat.id
     ss = session.query(Session).filter(Session.chat_id == chat_id).first()
     
@@ -125,27 +123,209 @@ def callback_query(call):
                     ss.step = "type"
                 ss.category = category_id
                 session.commit()
-                break        
+                break 
+
+    if "kafedra_" in call.data:
+        kafedra_id = call.data.split("_")[1]
+        items = session.query(Kafedra).all()
+        if call.message.chat.id not in user_data:
+            user_data[call.message.chat.id] = []
+        for i in items:
+            if kafedra_id == str(i.id):
+                kafedra_name = i.name
+                bot.edit_message_text(
+                        "Kafedra: " + kafedra_name, call.message.chat.id, call.message.id, reply_markup = None)
+                bot.send_message(
+                call.message.chat.id, "Илтимос устозни танланг", reply_markup =  gen_model_markup(Teacher,True,kafedra_id))
+                ss.step = ""
+            user_data[call.message.chat.id].append({
+                "type" : "kafedra_id",
+                "value": kafedra_id,
+                "datetime": datetime.now()
+            })
+            session.commit()
+            break 
     
-    elif call.data == "warning":
+    elif call.data in ["warning", "success", "danger"]:
         #t = session.query(Teacher).get(t_id).name
         bot.edit_message_text(
-            "Этирозни матнини йозб колдиринг, видео жонатинг, аудио жонатинг, фото жонатинг, файл жонатинг: ", call.message.chat.id, call.message.id, reply_markup=None)
+            "Мурожат тури" + call.data, call.message.chat.id, call.message.id, reply_markup=None)
+        
+        bot.send_message(call.message.chat.id,
+        "Мурожаатларингизни матн, видео, овозли файл ёки документ куринишида жунатинг: ",
+        reply_markup=LAST)
+        
+        ss.type = call.data
         ss.step = "listening"
         session.add(ss)
         session.commit()
+        if call.message.chat.id not in user_data:
+            user_data[call.message.chat.id] = []
         print(ss.step)
 
+'''
+user_data[message.chat.id].append({
+    "type" : "text",
+    "value": message.text
+    "datetime": datetime.now()
+})
+
+'''
 
 @bot.message_handler(content_types='text')
 def message_reply(message):
     ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
+    
+    if ss.step == "listening":
+        if message.text == "Юбориш":
+            com = Complain(
+                category_id=int(ss.category),
+                type = ss.type,
+                first_name = ss.first_name,
+                username = ss.username,
+                chat_id= ss.chat_id
+                
+            )
+            session.add(com)
+            session.commit()
+            for item in user_data[message.chat.id]:
+                com_d = Complain_Data(
+                    complain_id = com.id,
+                    key = item['key'],
+                    value = item['value']
+                )
+                session.add(com_d)
+                session.commit()
+            
+            ss.step = "test"
+            session.add(ss)
+            session.commit()
+        
+        text = message.text
+        user_data[message.chat.id].append({
+            "key" : "text",
+            "value" : text,
+            "time" : datetime.now()
+        })
+        
+@bot.message_handler(content_types='audio')
+def audio_handler(message):
+    ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
     print(ss.step)
     if ss.step == "listening":
-        text = message.text
-        bot.send_message(
-            message.chat.id, "Этироз матни кабул килинди, файл, видео, аудио, расм ташен")
+        audio_file = message.audio.file_id
+        file_info = bot.get_file(audio_file)
+        print(file_info)
+        ext = file_info.file_path.split(".")[1]
+        filename = file_info.file_unique_id + "." + ext
+        path = STATIC_PATH + "audio/" + filename
+        user_data[message.chat.id].append({
+            "key" : "audio",
+            "value" : path,
+            "time" : datetime.now()
+        })
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        
 
+@bot.message_handler(content_types='voice')
+def voice_handler(message):
+    ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
+    print(ss.step)
+    if ss.step == "listening":
+        voice_file = message.voice.file_id
+        file_info = bot.get_file(voice_file)
+        print(file_info)
+        ext = "ogg"# file_info.file_path.split(".")[1]
+        downloaded_file = bot.download_file(file_info.file_path)
+        filename = file_info.file_unique_id + "." + ext
+        path = STATIC_PATH + "voice/" + filename
+        with open(path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        user_data[message.chat.id].append({
+            "key" : "voice",
+            "value" : path,
+            "time" : datetime.now()
+        })
+        print(user_data[message.chat.id])
+
+
+@bot.message_handler(content_types='document')
+def document_handler(message):
+    ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
+    print(ss.step)
+    if ss.step == "listening":
+        doc_file = message.document.file_id
+        file_info = bot.get_file(doc_file)
+        print(file_info)
+        ext = file_info.file_path.split(".")[1]
+        downloaded_file = bot.download_file(file_info.file_path)
+        filename = file_info.file_unique_id + "." + ext
+        path = STATIC_PATH + "document/" + filename
+        with open(path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        user_data[message.chat.id].append({
+            "key" : "document",
+            "value" : path,
+            "time" : datetime.now()
+        })
+        print(user_data[message.chat.id])
+
+
+@bot.message_handler(content_types='photo')
+def photo_handler(message):
+    ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
+    print(ss.step)
+    if ss.step == "listening":
+        photo_file = message.photo[-1].file_id
+        photo_info = bot.get_file(photo_file)
+        
+        ext = photo_info.file_path.split(".")[1]
+        downloaded_file = bot.download_file(photo_info.file_path)
+        filename = photo_info.file_unique_id + "." + ext
+        path = STATIC_PATH + "photo/" + filename
+        
+        with open(path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        user_data[message.chat.id].append({
+            "key" : "photo",
+            "value" : path,
+            "time" : datetime.now()
+        })
+        print(user_data[message.chat.id])
+
+
+'''
+@bot.message_handler(content_types='photo')
+def voice_handler(message):
+    ss = session.query(Session).filter(Session.chat_id == message.chat.id).first()
+    print(ss.step)
+    if ss.step == "listening":
+        doc_file = message.document.file_id
+        file_info = bot.get_file(doc_file)
+        print(file_info)
+        ext = file_info.file_path.split(".")[1]
+        downloaded_file = bot.download_file(file_info.file_path)
+        filename = file_info.file_unique_id + "." + ext
+        path = STATIC_PATH + "photo/" + filename
+        with open(path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        user_data[message.chat.id].append({
+            "key" : "document",
+            "value" : path,
+            "time" : datetime.now()
+        })
+        print(user_data[message.chat.id])
+
+'''
+# @bot.message_handler(content_types=['voice'])
+# def voice_processing(message):
+#     file_info = bot.get_file(message.voice.file_id)
+#     downloaded_file = bot.download_file(file_info.file_path)
+#     with open('new_file.ogg', 'wb') as new_file:
+#         new_file.write(downloaded_file)
+       
         
 #warning danger success listening
 

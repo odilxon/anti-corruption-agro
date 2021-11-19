@@ -56,7 +56,6 @@ class Complain_Data(Base):
     key = Column(String, nullable=False) # kafedra_id, teacher_id,  data_type(img,text,video,voice,doc) 
     value = Column(String, nullable=False)
 
-"го гс в тг? ок"
 class Session(Base):
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True)

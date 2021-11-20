@@ -99,6 +99,7 @@ def send_welcome(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    
     print(call.data)
     chat_id = call.message.chat.id
     ss = session.query(Session).filter(Session.chat_id == chat_id).first()
@@ -127,6 +128,7 @@ def callback_query(call):
 
     if "kafedra_" in call.data:
         kafedra_id = call.data.split("_")[1]
+        print(kafedra_id)
         items = session.query(Kafedra).all()
         if call.message.chat.id not in user_data:
             user_data[call.message.chat.id] = []
@@ -137,14 +139,36 @@ def callback_query(call):
                         "Kafedra: " + kafedra_name, call.message.chat.id, call.message.id, reply_markup = None)
                 bot.send_message(
                 call.message.chat.id, "Илтимос устозни танланг", reply_markup =  gen_model_markup(Teacher,True,kafedra_id))
-                ss.step = ""
-            user_data[call.message.chat.id].append({
+                ss.step = "teacher"
+                user_data[call.message.chat.id].append({
                 "type" : "kafedra_id",
                 "value": kafedra_id,
                 "datetime": datetime.now()
-            })
-            session.commit()
-            break 
+                })
+                session.commit()
+                break 
+    if "teacher_" in call.data:
+        teacher_id = call.data.split("_")[1]
+        
+        items = session.query(Teacher).all()
+        if call.message.chat.id not in user_data:
+            user_data[call.message.chat.id] = []
+        for i in items:
+            if teacher_id == str(i.id):  
+                teacher_name = i.name
+                bot.edit_message_text(
+                        "Укитувчи: " + teacher_name, call.message.chat.id, call.message.id, reply_markup = None)
+                bot.send_message(call.message.chat.id,"Мурожат турини танланг:",reply_markup=type_keyboard)
+                ss.step = "type"
+                user_data[call.message.chat.id].append({
+                    "type" : "teacher_id",
+                    "value": teacher_id,
+                    "datetime": datetime.now()
+                })
+                session.commit()
+                
+                print(ss.step)
+                break 
     
     elif call.data in ["warning", "success", "danger"]:
         #t = session.query(Teacher).get(t_id).name
@@ -189,14 +213,24 @@ def message_reply(message):
             session.add(com)
             session.commit()
             for item in user_data[message.chat.id]:
-                com_d = Complain_Data(
-                    complain_id = com.id,
-                    key = item['key'],
-                    value = item['value']
-                )
+                if "type" in item:
+                    com_d = Complain_Data(
+                        complain_id = com.id,
+                        key = item['type'],
+                        value = item['value']
+                    )
+                elif "key" in item:
+                    com_d = Complain_Data(
+                        complain_id = com.id,
+                        key = item['key'],
+                        value = item['value']
+                    )
                 session.add(com_d)
                 session.commit()
             
+            
+            bot.send_message(message.chat.id,"Сз жонаткан нарсалар кошилди! стартни босинг /start",reply_markup=None)
+
             ss.step = "test"
             session.add(ss)
             session.commit()
@@ -207,6 +241,8 @@ def message_reply(message):
             "value" : text,
             "time" : datetime.now()
         })
+        print(user_data[message.chat.id])
+        print(ss.step)
         
 @bot.message_handler(content_types='audio')
 def audio_handler(message):

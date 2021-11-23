@@ -56,14 +56,13 @@ class Complain_Data(Base):
     key = Column(String, nullable=False) # kafedra_id, teacher_id,  data_type(img,text,video,voice,doc) 
     value = Column(String, nullable=False)
 
-"го гс в тг? ок"
 class Session(Base):
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True)
     chat_id = Column(Integer, nullable=True)
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
-    step = Column(String, nullable=True)
+    step = Column(String, nullable=True) # category, ( 2 - kafedra - teacher ), type, text, video, photo, voice 
     category = Column(String, nullable=True)
     type = Column(String, nullable=True)
     username = Column(String, nullable=True)

@@ -15,10 +15,10 @@
             <div class="card-title">
                 <!--begin::User-->
                 <div class="d-flex justify-content-center flex-column me-3">
-                    <a href="#" class="fs-4 fw-bolder text-gray-900 text-hover-primary me-1 mb-2 lh-1">name</a>
+                    <a href="https://t.me/{{data['complain'].username}}" class="fs-4 fw-bolder text-gray-900 text-hover-primary me-1 mb-2 lh-1">{{'@'+data['complain'].username}}</a>
                     <!--begin::Info-->
                     <div class="mb-0 lh-1">
-                        username
+                        {{data['complain'].first_name}}
                         
                     </div>
                     <!--end::Info-->
@@ -30,9 +30,9 @@
             <div class="card-toolbar">
                 <!--begin::Menu-->
                 <div class="me-n3">
-                    <button class="btn btn-sm btn-icon btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                    <!-- <button class="btn btn-sm btn-icon btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                         <i class="bi bi-three-dots fs-2"></i>
-                    </button>
+                    </button> -->
                     <!--begin::Menu 3-->
                     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3" data-kt-menu="true">
                         <!--begin::Heading-->
@@ -96,6 +96,7 @@
             <!--begin::Messages-->
             <div class="scroll-y me-n5 pe-5 h-300px h-lg-auto" data-kt-element="messages" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_header, #kt_toolbar, #kt_footer, #kt_chat_messenger_header, #kt_chat_messenger_footer" data-kt-scroll-wrappers="#kt_content, #kt_chat_messenger_body" data-kt-scroll-offset="-2px">
                 <!--begin::Message(in)-->
+                {% for c_d in data['complain_data'] %}
                 <div class="d-flex justify-content-start mb-10">
                     <!--begin::Wrapper-->
                     <div class="d-flex flex-column align-items-start">
@@ -103,7 +104,8 @@
                         <div class="d-flex align-items-center mb-2">
                             <!--begin::Avatar-->
                             <div class="symbol symbol-35px symbol-circle">
-                                
+                                {% if c_d.key == 'kafedra_id' %} {{c_d.value}} {% endif %}
+                                {% if c_d.key == 'teacher_id' %} {{c_d.value}} {% endif %}
                             </div>
                             <!--end::Avatar-->
                             <!--begin::Details-->
@@ -111,30 +113,46 @@
                         </div>
                         <!--end::User-->
                         <!--begin::Text-->
-                        <div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">message</div>
-                        <!--end::Text-->
-                    </div>
-                    <!--end::Wrapper-->
-                </div>
-                <div class="d-flex justify-content-start mb-10">
-                    <!--begin::Wrapper-->
-                    <div class="d-flex flex-column align-items-start">
-                        <!--begin::User-->
-                        <div class="d-flex align-items-center mb-2">
-                            <!--begin::Avatar-->
-                            <div class="symbol symbol-35px symbol-circle">
-                                
-                            </div>
-                            <!--end::Avatar-->
-                            <!--begin::Details-->
-                            <!--end::Details-->
-                        </div>
-                        <!--end::User-->
-                        <!--begin::Text-->
-                        <audio controls>
-                            <source src="{{url_for('static', filename='bot/audio/1.ogg')}}" type="audio/ogg">
-                        </audio>
                         
+                        {% if c_d.key == 'text' %}
+                        <div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">{{c_d.value}}</div>
+                        {% elif c_d.key == 'img' %}
+                        <img src="{{c_d.value}}" alt="img">
+                        {% elif c_d.key == 'video' %}
+                        <video width="320" height="240" controls>
+                            <source src="{{c_d.value}}" type="video/{{c_d.value.split('.')[-1]}}">
+                        </video>
+                        {% elif c_d.key == 'voice' %}
+                        <audio controls>
+                            <source src="{{c_d.value}}" type="audio/{{c_d.value.split('.')[-1]}}">
+                        </audio>
+                        {% elif c_d.key == 'document' %}
+                        <div class="attachments-container">
+                            <a href="{{c_d.value}}" class="ripple-effect attachment-box" download>Document</a>
+                        </div>
+                        {% endif %}
+
+                        
+                        <!--end::Text-->
+                    </div>
+                    <!--end::Wrapper-->
+                </div>
+                {% endfor %}
+                <div class="d-flex justify-content-start mb-10">
+                    <!--begin::Wrapper-->
+                    <div class="d-flex flex-column align-items-start">
+                        <!--begin::User-->
+                        <div class="d-flex align-items-center mb-2">
+                            <!--begin::Avatar-->
+                            <div class="symbol symbol-35px symbol-circle">
+                                
+                            </div>
+                            <!--end::Avatar-->
+                            <!--begin::Details-->
+                            <!--end::Details-->
+                        </div>
+                        <!--end::User-->
+                        <!--begin::Text-->
                                 
                         <!--end::Text-->
                     </div>
@@ -155,7 +173,7 @@
                         </div>
                         <!--end::User-->
                         <!--begin::Text-->
-                        <img src="{{url_for('static', filename='bot/img/1.jpg')}}" alt="1">
+                        
                         
                                 
                         <!--end::Text-->
@@ -233,13 +251,12 @@
         </div>
         <!--end::Card body-->
         <!--begin::Card footer-->
-        <div class="card-footer pt-4" id="kt_chat_messenger_footer">
-            <!--begin::Input-->
+        <!-- <div class="card-footer pt-4" id="kt_chat_messenger_footer">
+            
             <textarea class="form-control form-control-flush mb-3" rows="1" data-kt-element="input" placeholder="Type a message"></textarea>
-            <!--end::Input-->
-            <!--begin:Toolbar-->
+            
             <div class="d-flex flex-stack">
-                <!--begin::Actions-->
+                
                 <div class="d-flex align-items-center me-2">
                     <button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="Coming soon">
                         <i class="bi bi-paperclip fs-3"></i>
@@ -248,13 +265,12 @@
                         <i class="bi bi-upload fs-3"></i>
                     </button>
                 </div>
-                <!--end::Actions-->
-                <!--begin::Send-->
+               
                 <button class="btn btn-primary" type="button" data-kt-element="send">Send</button>
-                <!--end::Send-->
+                
             </div>
-            <!--end::Toolbar-->
-        </div>
+            
+        </div> -->
         <!--end::Card footer-->
     </div>
     <!--end::Messenger-->

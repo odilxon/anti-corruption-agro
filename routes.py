@@ -70,8 +70,18 @@ def main_app():
 @app.route("/complain/<int:c_id>")
 def comp_i(c_id):
     c = session.query(Complain).get(c_id)
-    coplain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
+    complain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
-    return render_template("pages/complain.html")
+    for comp in complain_data:
+        if comp.key == 'kafedra_id':
+            comp.value = Kafedra.query.filter_by(id=comp.value).first()
+        if comp.key == 'teacher_id':
+            comp.value = Teacher.query.filter_by(id=comp.value).first()
+
+    data = {}
+    data['complain'] = c
+    data['complain_data'] = complain_data # there array
+    print([(x.key, x.value) for x in complain_data])
+    return render_template("pages/complain.html", data=data)
 session.close()

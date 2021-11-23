@@ -50597,3 +50597,57 @@ body {
 }
 
 /*# sourceMappingURL=style.bundle.css.map*/
+
+.attachment-box {
+  display: flex;
+  margin: 0 20px 20px 0;
+  background-color: #f4f4f4;
+  border-radius: 4px 0px 4px 4px;
+  font-weight: 600;
+  padding: 15px 20px;
+  padding-bottom: 45px;
+  padding-right: 25px;
+  line-height: 24px;
+  flex-direction: column;
+  color: #666;
+  position: relative;
+  transition: 0.3s;
+  flex: 0 1 calc(50% - 21px);
+  cursor: default;
+  position: relative;
+}
+
+.attachments-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: calc(100% + 20px);
+  margin-bottom: -30px;
+}
+
+.ripple-effect {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+a.attachment-box {
+  cursor: pointer;
+  width: 400px;
+}
+
+.attachment-box:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 20px 20px 0;
+  border-style: solid;
+  border-color: rgba(0,0,0,0.15) #fff;
+  transition: 0.3s;
+  border-radius: 0 0 0 4px;
+}
+
+a.attachment-box:hover:before {
+  border-color: rgba(0,0,0,0.25) #fff;
+}

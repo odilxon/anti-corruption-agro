@@ -9,6 +9,7 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="{{url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+
 <style>
   .kaf-filter {
     display: none;
@@ -25,10 +26,10 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-sm">
+          <div class="col-sm-3">
             <div class="form-group">
               <label for="type"> Тури </label>
-              <select name="type" id="type" class="form-select">
+              <select name="type" id="type" class="form-select select2">
                 <option value="all"> Барчаси </option>
                 <option value="positive"> Таклиф </option>
                 <option value="warning"> Этироз </option>
@@ -36,10 +37,10 @@
               </select>
             </div> 
           </div>
-          <div class="col-sm">
+          <div class="col-sm-3">
             <div class="form-group">
               <label for="category">Категория</label>
-                <select name="category" id="category" class="form-select">
+                <select name="category" id="category" class="form-select select2">
                   <option value="all">Барчаси</option>
                   {% for cat in data['cats'] %}
                   <option value="{{cat.id}}">{{cat.name}}</option>
@@ -48,10 +49,10 @@
                 
             </div>
           </div>
-          <div class="col-sm kaf-filter" >
+          <div class="col-sm-3 kaf-filter" >
             <div class="form-group">
               <label for="kafedra">Кафедра</label>
-                <select name="kafedra" id="kafedra" class="form-select">
+                <select name="kafedra" id="kafedra" class="form-select select2">
                   <option value="all">Барчаси</option>
                   {% for kaf in data['kafedra'] %}
                   <option value="{{kaf.id}}">{{kaf.name}}</option>
@@ -60,16 +61,25 @@
                 
             </div>
           </div>
-          <div class="col-sm" style="display: none;">
+          <div class="col-sm-3 kaf-filter" >
             <div class="form-group">
-              <label for="keyword">Бу сондан</label>
-              <input name="start_date" id="start_d" type="date" class="form-control keyword-input"/>
+              <label for="kafedra">Ўқитувчи</label>
+                <select name="teacher" id="teacher" class="form-select select2">
+                  
+                </select>
+                
             </div>
           </div>
-          <div class="col-sm" style="display: none;">
+          <div class="col-sm-3" >
+            <div class="form-group">
+              <label for="keyword">Бу сондан</label>
+              <input name="start_date" id="start_d" type="date" class="form-control keyword-input" style="padding: 1.5rem 1rem;"/>
+            </div>
+          </div>
+          <div class="col-sm-3" >
             <div class="form-group">
               <label for="keyword">Шу сонгача</label>
-              <input name="end_date" id="end_d" type="date" class="form-control keyword-input" />
+              <input name="end_date" id="end_d" type="date" class="form-control keyword-input" style="padding: 1.5rem 1rem;" />
             </div>
           </div>
         </div>
@@ -82,22 +92,9 @@
         <div class="card-header bg-navy ">
           <h3 class="card-title"> Список заявок </h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="table-box">
          
-              <table class="table table-stripped" id="coms">
-                <thead>
-                    <tr>
-                        <th> ID </th>
-                        <th> Тип </th>
-                        <th> Категория </th>
-                        <th> Вақти </th>
-                        <th> Бошқариш </th>
-                    </tr>
-                </thead>
-                <tbody id="t_body">
-                    
-                </tbody>
-              </table>
+              
           
         </div>
     </div>
@@ -112,34 +109,79 @@
   var API_URL = window.location.origin + "/api/";
   $(document).ready(function(){
 
+    $("#kafedra").change(function(){
+
+      var kaf_id = $(this).val();
+      $.ajax({
+        url : API_URL + "teachers",
+        type: "POST",
+        data : {kaf_id: kaf_id},
+        success : function(data){
+          $("#teacher").empty();
+          for(var i in data){
+            $("#teacher").append(`
+          <option value='${data[i][0]}'>${data[i][1]} </option>
+          `);
+          }
+          
+        }
+      })
+    });
+
+    $(".select2").select2({
+      theme: "bootstrap4",
+    });
     $("#category").change(function(){
-      if($(this).val() == 'ўқитувчи')
+      if($(this).val() == '2'){
         $(".kaf-filter").show();
+        $("#kafedra").change();
+
+      }
+        
 
       else $(".kaf-filter").hide();
 
 
     });
     $("#show").click(function(){
-      
+      $("#table-box").empty();
       var data = {
         type: $("#type").val(),
         category: $("#category").val(),
         s_date : $("#start_d").val(),
-        e_date : $("#end_d").val()
+        e_date : $("#end_d").val(),
+        kaf : $("#kafedra").val(),
+        teacher : $("#teacher").val()
       }
-
-      if (data['s_date'] != '' || data['e_date'] != '')
-      {
-        toastr.error("Саналарни танланг");
-      }
-      else {
+      $("#table-box").append(`
+      <table class="table table-stripped" id="coms">
+                <thead>
+                    <tr>
+                        <th> ID </th>
+                        <th> Тип </th>
+                        <th> Категория </th>
+                        <th> Вақти </th>
+                        <th> Бошқариш </th>
+                    </tr>
+                </thead>
+                <tbody id="t_body">
+                    
+                </tbody>
+              </table>
+      `)
+      // if (data['s_date'] == '' || data['e_date'] == '')
+      // {
+      //   toastr.error("Саналарни танланг");
+      // }
+      // else {
+      
         $.ajax({
           type: "POST",
           url : API_URL + "main",
           data: data,
           success: function(data) {
-            $("#t_body").html("");
+            
+            //$("#t_body").empty();
             
             for(var i=0; i<data.length; i++) {
               var b = '<a class="btn btn-outline-info" href="/complain/'+ data[i]['id'] + '"> Показать </a>';
@@ -163,10 +205,10 @@
                     "dom": 'Bfrtip',
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf",]
-                }).buttons().container();
+                }).buttons();
           }
         });
-      }
+      // }
       
     });
 

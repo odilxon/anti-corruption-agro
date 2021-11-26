@@ -61,9 +61,13 @@ def main_app():
     categories = session.query(Category).all() 
     kafedra = session.query(Kafedra).all()
     kafedra = sorted(kafedra, key=lambda kaf: kaf.name)
+    teacher = session.query(Teacher).all()
+    teacher = sorted(teacher, key=lambda kaf: kaf.name)
+    
     data = {
         "cats" : categories,
-        "kafedra" : kafedra
+        "kafedra" : kafedra,
+        "teacher": teacher
     }
     return render_template("pages/list.html", data=data)
 

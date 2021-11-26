@@ -62,7 +62,7 @@ class Session(Base):
     chat_id = Column(Integer, nullable=True)
     message = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
-    step = Column(String, nullable=True)
+    step = Column(String, nullable=True) # category, ( 2 - kafedra - teacher ), type, text, video, photo, voice 
     category = Column(String, nullable=True)
     type = Column(String, nullable=True)
     username = Column(String, nullable=True)

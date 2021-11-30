@@ -45,24 +45,27 @@ def api_main():
     # if teacher != 'all':
     #     teacherf = Complain_Data.query.filter(Complain_Data.key=='teacher_id', Complain_Data.value==teacher).first()
     cc = []
+    print(kaf)
+    print(teacher)
     for com in coms:
         ca = "-"
         if com.category is not None:
             ca = com.category.name
         
+        print([(x.key, x.value) for x in com.complain_data])
         C = {   
             "id" : com.id,
             "type" : com.type,
             "category" : ca,
             "date" : com.created_time.strftime("%Y-%m-%d  %H:%M:%S")
         }
-        if int(category) == 2:
+        if category != 'all' and int(category) == 2:
             if teacher != 'all':
-                if int(teacher) in [x.value for x in com.complain_data if x.key =='teacher_id']:
+                if teacher in [x.value for x in com.complain_data if x.key =='teacher_id']:
                     cc.append(C)
                 continue
             elif kaf != 'all':
-                if int(kaf) in [x.value for x in com.complain_data if x.key =='kafedra_id']:
+                if kaf in [x.value for x in com.complain_data if x.key =='kafedra_id']:
                     cc.append(C)
                 continue
             else:

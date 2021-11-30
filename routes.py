@@ -77,14 +77,18 @@ def comp_i(c_id):
     complain_data = session.query(Complain_Data).filter(Complain_Data.complain_id==c_id).all()
     if c is None:
         abort(404)
+    kafedra_name = ""
+    teacher_name = ""
     for comp in complain_data:
         if comp.key == 'kafedra_id':
-            comp.value = Kafedra.query.filter_by(id=comp.value).first()
+            kafedra_name = session.query(Kafedra).filter(Kafedra.id==comp.value).first().name
         if comp.key == 'teacher_id':
-            comp.value = Teacher.query.filter_by(id=comp.value).first()
-
+            teacher_name = session.query(Teacher).filter(Teacher.id==comp.value).first().name
+    c.created_time = datetime.strftime(c.created_time, "%Y-%m-%d")
     data = {}
     data['complain'] = c
+    data['teacher_name'] = teacher_name
+    data['kafedra_name'] = kafedra_name
     data['complain_data'] = complain_data # there array
     print([(x.key, x.value) for x in complain_data])
     return render_template("pages/complain.html", data=data)

@@ -118,6 +118,7 @@
         data : {kaf_id: kaf_id},
         success : function(data){
           $("#teacher").empty();
+          $("#teacher").append('<option value="all">Барчаси </option>')
           for(var i in data){
             $("#teacher").append(`
           <option value='${data[i][0]}'>${data[i][1]} </option>
@@ -187,7 +188,7 @@
               var b = '<a class="btn btn-outline-info" href="/complain/'+ data[i]['id'] + '"> Показать </a>';
               if (data[i]['type'] == 'warning')
               var t = "<button class='btn btn-xs btn-warning'> Этироз </button>"
-              else if (data[i]['type'] == 'positive')
+              else if (data[i]['type'] == 'success')
               var t = "<button class='btn btn-xs btn-success'> Таклиф </button>"
               else t = "<button class='btn btn-xs btn-danger'> Шикоят </button>"
               var d = "<tr> <td> " + data[i]['id'] + "</td>";

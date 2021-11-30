@@ -225,16 +225,17 @@ def message_reply(message):
                         key = item['key'],
                         value = item['value']
                     )
+                
                 session.add(com_d)
                 session.commit()
             
             
             bot.send_message(message.chat.id,"Сз жонаткан нарсалар кошилди! стартни босинг /start",reply_markup=None)
-
+            user_data[message.chat.id] = []
             ss.step = "test"
             session.add(ss)
             session.commit()
-        
+            return 1
         text = message.text
         user_data[message.chat.id].append({
             "key" : "text",

@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import null
 
 meta = MetaData()
 Base = declarative_base()
-engine = create_engine("postgresql://odya:o030101@92.63.206.61:5432/agrar")
+engine = create_engine("postgresql://odya:o030101@127.0.0.1:5432/agrar_bot")
 
 Session = sessionmaker(bind=engine)
 session = Session()

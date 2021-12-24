@@ -3,6 +3,7 @@ openpyxl
 pandas
 pip-chill
 psycopg2-binary
+pyjwt
 pytelegrambotapi
 sqlalchemy
 xlrd

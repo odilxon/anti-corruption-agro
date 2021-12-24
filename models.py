@@ -3,7 +3,7 @@ from sqlalchemy import func, and_, or_, delete, create_engine, text, MetaData, I
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, subqueryload, joinedload, relationship
 from sqlalchemy.sql.expression import null
-
+from werkzeug.security import generate_password_hash, check_password_hash
 meta = MetaData()
 Base = declarative_base()
 engine = create_engine("postgresql://odya:o030101@127.0.0.1:5432/agrar_bot")
@@ -25,6 +25,10 @@ class User(Base):
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     token = Column(String, nullable=False)
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Teacher(Base):
@@ -37,7 +41,11 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     complains = relationship("Complain", backref='category', lazy=True)
-
+    def format(self):
+        return {
+            "id" : self.id,
+            "name" : self.name
+        }
 class Complain(Base):
     __tablename__ = 'complain'
     id = Column(Integer, primary_key=True)
@@ -48,6 +56,17 @@ class Complain(Base):
     chat_id = Column(Integer,  nullable=True)
     created_time = Column(DateTime,default=datetime.now, nullable=False)
     complain_data = relationship("Complain_Data", backref="complain", lazy=True)
+    def format(self):
+        return {
+            'id' : self.id,
+            "category": self.category.name,
+            "type": self.type,
+            "first_name" : self.first_name,
+            "username" : self.username,
+            "chat_id" : self.chat_id,
+            "created_time" : str(self.created_time),
+            "complain_date" : [ x.format() for x in self.complain_data ]
+        }
 
 class Complain_Data(Base):
     __tablename__ = 'complain_data'
@@ -55,6 +74,13 @@ class Complain_Data(Base):
     complain_id = Column(Integer, ForeignKey('complain.id')) 
     key = Column(String, nullable=False) # kafedra_id, teacher_id,  data_type(img,text,video,voice,doc) 
     value = Column(String, nullable=False)
+    def format(self):
+        return {
+            "id" : self.id,
+            "key" : self.key,
+            "value" : self.value
+        }
+    
 
 class Session(Base):
     __tablename__ = 'session'
@@ -73,7 +99,7 @@ def Reset():
     Base.metadata.create_all(bind=engine)
 
 #Reset()
-# categories = ['Ошхона', 'Ўқитувчи', 'TTJ (Ётоқхона)', 'Ҳожатхона']
+categories = ['Ошхона', 'Ўқитувчи', 'TTJ (Ётоқхона)', 'Ҳожатхона']
 
 session.close()
 
